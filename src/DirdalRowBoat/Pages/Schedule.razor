@@ -5,7 +5,7 @@
 @using BlazorScheduler
 @using DirdalRowBoat.Data
 
-<Scheduler>
+<Scheduler OnAddingNewAppointment="OnAddingNewAppointment">
     <Appointments>
         @foreach (var app in _appointments)
         {
@@ -17,6 +17,12 @@
 </Scheduler>
 
 @code {
-    List<AppointmentDto> _appointments = new() { new AppointmentDto() { Title = "Test", Start = DateTime.Today, End = DateTime.Today.AddDays(1) } };
+    List<AppointmentDto> _appointments = new() { new AppointmentDto() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
+
+    Task OnAddingNewAppointment(DateTime start, DateTime end)
+    {
+        _appointments.Add(new AppointmentDto { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
+        return Task.CompletedTask;
+    }
 
 }
