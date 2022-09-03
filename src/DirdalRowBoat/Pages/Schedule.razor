@@ -1,0 +1,22 @@
+﻿@page "/schedule"
+
+<PageTitle>Schedule </PageTitle>
+
+@using BlazorScheduler
+@using DirdalRowBoat.Data
+
+<Scheduler>
+    <Appointments>
+        @foreach (var app in _appointments)
+        {
+            <Appointment Start="@app.Start" End="@app.End" Color="@app.Color">
+                @app.Title
+            </Appointment>
+        }
+    </Appointments>
+</Scheduler>
+
+@code {
+    List<AppointmentDto> _appointments = new() { new AppointmentDto() { Title = "Test", Start = DateTime.Today, End = DateTime.Today.AddDays(1) } };
+
+}
