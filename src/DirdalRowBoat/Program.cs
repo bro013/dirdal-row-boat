@@ -1,12 +1,14 @@
-using DirdalRowBoat.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using DirdalRowBoat.Database;
+using DirdalRowBoat.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddDbContext<ReservationContext>(options => options.UseInMemoryDatabase("dirdal-row-boat-database"));
+builder.Services.AddScoped<ReservationService>();
 
 var app = builder.Build();
 

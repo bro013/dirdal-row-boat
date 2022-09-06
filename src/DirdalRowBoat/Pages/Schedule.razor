@@ -3,26 +3,50 @@
 <PageTitle>Schedule </PageTitle>
 
 @using BlazorScheduler
-@using DirdalRowBoat.Data
+@using DirdalRowBoat.Database
+@using DirdalRowBoat.Database.Models
+@using DirdalRowBoat.Services
 
-<Scheduler OnAddingNewAppointment="OnAddingNewAppointment">
+@inject ReservationService ReservationService
+
+<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData">
     <Appointments>
-        @foreach (var app in _appointments)
+        @foreach (var reservation in _reservations)
         {
-            <Appointment Start="@app.Start" End="@app.End" Color="@app.Color">
-                @app.Title
+            <Appointment Start="@reservation.Start" End="@reservation.End" Color="@reservation.Color">
+                @reservation.Title
             </Appointment>
         }
     </Appointments>
 </Scheduler>
 
 @code {
-    List<AppointmentDto> _appointments = new() { new AppointmentDto() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
+    List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
 
-    Task OnAddingNewAppointment(DateTime start, DateTime end)
+    Guid userId;
+
+    protected override void OnInitialized()
     {
-        _appointments.Add(new AppointmentDto { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
-        return Task.CompletedTask;
+        userId = Guid.NewGuid();
+    }
+
+    async Task OnAddingNewAppointment(DateTime start, DateTime end)
+    {
+        var reservation = new Reservation()
+            {
+                UserId = userId,
+                Title = "Ny reservering",
+                Start = start,
+                End = end,
+                Color = "aqua"
+            };
+        await ReservationService.AddReservationAsync(reservation);
+        _reservations.Add(reservation);
+    }
+
+    async Task OnRequestNewData(DateTime start, DateTime end)
+    {
+        _reservations = await ReservationService.GetReservationsAsync(start, end);
     }
 
 }
