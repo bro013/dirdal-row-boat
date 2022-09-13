@@ -5,10 +5,11 @@
 @using Bodil.Services
 
 @inject ReservationService ReservationService
+@inject IDialogService DialogService
 
 <PageTitle>Index</PageTitle>
 
-<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData">
+<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag">
     <Appointments>
         @foreach (var reservation in _reservations)
         {
@@ -19,7 +20,7 @@
     </Appointments>
 </Scheduler>
 
-@code{
+@code {
     List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
 
     Guid userId;
@@ -31,16 +32,16 @@
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end)
     {
-        var reservation = new Reservation()
-            {
-                UserId = userId,
-                Title = "Ny reservering",
-                Start = start,
-                End = end,
-                Color = "aqua"
-            };
-        await ReservationService.AddReservationAsync(reservation);
-        _reservations.Add(reservation);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters { ["StartTime"] = start, ["EndTime"] = end };
+        var dialog = DialogService.Show<ReservationDialog>("Reservasjon", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var reservation = result.Data as Reservation;
+            await ReservationService.AddReservationAsync(reservation);
+            _reservations.Add(reservation);
+        }
     }
 
     async Task OnRequestNewData(DateTime start, DateTime end)

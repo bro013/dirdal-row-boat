@@ -20,6 +20,7 @@ namespace Bodil.Services
         {
             try
             {
+                if (reservation == null) return;
                 _db.Reservations.Add(reservation);
                 await _db.SaveChangesAsync();
             }
