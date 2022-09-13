@@ -1,10 +1,52 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Hjem</PageTitle>
 
-<h1>Dirdal Robåt</h1>
+@using BlazorScheduler
+@using DirdalRowBoat.Database
+@using DirdalRowBoat.Database.Models
+@using DirdalRowBoat.Services
 
-<span>
-    Velkommen til Dirdal Robåt! På denne siden kan du booke tid bruk av robåt og se andre sine bookinger. <br />
-    Gå til <a href="/schedule">Timeplan</a> for å booke eller se andre sine bookinger.
-</span>
+@inject ReservationService ReservationService
+
+<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData">
+    <Appointments>
+        @foreach (var reservation in _reservations)
+        {
+            <Appointment Start="@reservation.Start" End="@reservation.End" Color="@reservation.Color">
+                @reservation.Title
+            </Appointment>
+        }
+    </Appointments>
+</Scheduler>
+
+@code {
+    List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
+
+    Guid userId;
+
+    protected override void OnInitialized()
+    {
+        userId = Guid.NewGuid();
+    }
+
+    async Task OnAddingNewAppointment(DateTime start, DateTime end)
+    {
+        var reservation = new Reservation()
+            {
+                UserId = userId,
+                Title = "Ny reservering",
+                Start = start,
+                End = end,
+                Color = "aqua"
+            };
+        await ReservationService.AddReservationAsync(reservation);
+        _reservations.Add(reservation);
+    }
+
+    async Task OnRequestNewData(DateTime start, DateTime end)
+    {
+        _reservations = await ReservationService.GetReservationsAsync(start, end);
+    }
+
+}
