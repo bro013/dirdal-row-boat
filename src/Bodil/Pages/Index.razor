@@ -9,7 +9,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag">
+<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
     <Appointments>
         @foreach (var reservation in _reservations)
         {
