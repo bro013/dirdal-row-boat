@@ -24,9 +24,9 @@ namespace Bodil.Services
                 _db.Reservations.Add(reservation);
                 await _db.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError("Error adding reservation to database.\n{ErrorMessage}", ex.Message);
+                _logger.LogError(ex, "Error adding reservation to database");
                 throw;
             }
         }
@@ -40,10 +40,23 @@ namespace Bodil.Services
                     .ToListAsync();
 
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching reservations from database");
+                throw;
+            }
+        }
+
+        public async Task RemoveRevervationAsync(Reservation reservation)
+        {
+            try
+            {
+                _db.Reservations.Remove(reservation);
+                await _db.AddRangeAsync();
+            }
             catch(Exception ex)
             {
-                _logger.LogError("Error fetching reservations from database.\n{ErrorMessage}", ex.Message);
-                throw;
+                _logger.LogError(ex, "Error removing reservation");
             }
         }
     }

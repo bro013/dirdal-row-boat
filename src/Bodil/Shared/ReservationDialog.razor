@@ -1,7 +1,6 @@
-﻿@using Bodil.Database.Models
-<MudDialog>
+﻿<MudDialog>
     <DialogContent>
-        <MudTextField @bind-Value="@title" Label="Tittel" HelperText="Beskrivelse av reserveringen" Variant="Variant.Text"></MudTextField>
+        <MudText Typo="Typo.inherit">Du har allerede reservert denne dagen. Vil du fjerne denne reservasjonen?</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -13,25 +12,9 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
-    [Parameter]
-    public DateTime StartTime { get; set; }
-
-    [Parameter]
-    public DateTime EndTime { get; set; }
-
-    string title = string.Empty;
-
     void Submit()
     {
-        var reservation = new Reservation()
-            {
-                UserId = Guid.NewGuid(),
-                Title = title,
-                Start = StartTime,
-                End = EndTime,
-                Color = "aqua"
-            };
-        MudDialog.Close(DialogResult.Ok(reservation));
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
 

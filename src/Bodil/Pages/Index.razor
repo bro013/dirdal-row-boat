@@ -5,7 +5,9 @@
 @using Bodil.Services
 
 @inject ReservationService ReservationService
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject ILogger<Index> Logger
 
 <PageTitle>Index</PageTitle>
 
@@ -32,20 +34,62 @@
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end)
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var parameters = new DialogParameters { ["StartTime"] = start, ["EndTime"] = end };
-        var dialog = DialogService.Show<ReservationDialog>("Reservasjon", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (IsRevervationAvailable(start, end))
         {
-            var reservation = result.Data as Reservation;
-            await ReservationService.AddReservationAsync(reservation);
-            _reservations.Add(reservation);
+            var reservation = new Reservation()
+                {
+                    Title = "Bjørn Rosland",
+                    Start = start,
+                    End = end,
+                    UserId = userId,
+                    Color = "aqua"
+                };
+            await AddRevervationAsync(reservation);
         }
+        else
+        {
+            await PromtDeleteRevervationAsync(start, end);
+        }
+
     }
 
     async Task OnRequestNewData(DateTime start, DateTime end)
     {
         _reservations = await ReservationService.GetReservationsAsync(start, end);
+    }
+
+    void OnOverflowAppointmentClick(DateTime day)
+    {
+        Logger.LogInformation(day.ToString());
+    }
+
+    bool IsRevervationAvailable(DateTime start, DateTime end) =>
+        _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId) is null;
+
+    async Task AddRevervationAsync(Reservation reservation)
+    {
+        _reservations.Add(reservation);
+        await ReservationService.AddReservationAsync(reservation);
+    }
+
+    async Task RemoveReservationAsync(Reservation reservation)
+    {
+        _reservations.Remove(reservation);
+        await ReservationService.RemoveRevervationAsync(reservation);
+    }
+
+    async Task PromtDeleteRevervationAsync(DateTime start, DateTime end)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = DialogService.Show<ReservationDialog>("Revervasjon", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var reservation = _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId);
+            if (reservation is not null)
+            {
+                _reservations.Remove(reservation);
+            }
+        }
     }
 }
