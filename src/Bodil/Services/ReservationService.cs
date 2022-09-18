@@ -10,6 +10,8 @@ namespace Bodil.Services
         private readonly ReservationContext _db;
         private readonly ILogger<ReservationService> _logger;
 
+        public List<Reservation> CurrentReservations { get; set; } = new();
+
         public ReservationService(ReservationContext db, ILogger<ReservationService> logger)
         {
             _db = db;
@@ -22,6 +24,7 @@ namespace Bodil.Services
             {
                 if (reservation == null) return;
                 _db.Reservations.Add(reservation);
+                CurrentReservations.Add(reservation);
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -31,7 +34,21 @@ namespace Bodil.Services
             }
         }
 
-        public async Task<List<Reservation>> GetReservationsAsync(DateTime start, DateTime end)
+        public async Task RemoveRevervationAsync(Reservation reservation)
+        {
+            try
+            {
+                _db.Reservations.Remove(reservation);
+                CurrentReservations.Remove(reservation);
+                await _db.AddRangeAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error removing reservation");
+            }
+        }
+
+        public async Task<IEnumerable<Reservation>> GetReservationsAsync(DateTime start, DateTime end)
         {
             try
             {
@@ -48,17 +65,11 @@ namespace Bodil.Services
             }
         }
 
-        public async Task RemoveRevervationAsync(Reservation reservation)
-        {
-            try
-            {
-                _db.Reservations.Remove(reservation);
-                await _db.AddRangeAsync();
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Error removing reservation");
-            }
-        }
+
+        public bool IsReservationAvailable(Guid userId, DateTime start, DateTime end) =>
+            CurrentReservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId) is null;
+
+        public bool HasRevervationsInInterval(DateTime start, DateTime end) =>
+            CurrentReservations.Where(r => r.Start >= start && r.End <= end).Any();
     }
 }

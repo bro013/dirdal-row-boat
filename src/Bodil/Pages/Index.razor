@@ -12,7 +12,7 @@
 
 <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
     <Appointments>
-        @foreach (var reservation in _reservations)
+        @foreach (var reservation in ReservationService.CurrentReservations)
         {
             <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
                 @reservation.Title
@@ -22,7 +22,6 @@
 </Scheduler>
 
 @code {
-    List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1) } };
 
     User user = new();
 
@@ -33,7 +32,7 @@
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end)
     {
-        if (IsRevervationAvailable(start, end))
+        if (ReservationService.IsReservationAvailable(user.Id, start, end))
         {
             var reservation = new Reservation()
                 {
@@ -42,7 +41,7 @@
                     End = end,
                     UserId = user.Id,
                 };
-            await AddRevervationAsync(reservation);
+            await ReservationService.AddReservationAsync(reservation);
         }
         else
         {
@@ -52,23 +51,12 @@
     }
 
     async Task OnRequestNewData(DateTime start, DateTime end)
-    {
-        _reservations = await ReservationService.GetReservationsAsync(start, end);
-    }
-
-    bool IsRevervationAvailable(DateTime start, DateTime end) =>
-        _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id) is null;
-
-    async Task AddRevervationAsync(Reservation reservation)
-    {
-        _reservations.Add(reservation);
-        await ReservationService.AddReservationAsync(reservation);
-    }
-
-    async Task RemoveReservationAsync(Reservation reservation)
-    {
-        _reservations.Remove(reservation);
-        await ReservationService.RemoveRevervationAsync(reservation);
+    { 
+        if(!ReservationService.HasRevervationsInInterval(start, end))
+        {
+            var resevations = await ReservationService.GetReservationsAsync(start, end);
+            ReservationService.CurrentReservations.AddRange(resevations);
+        }
     }
 
     async Task PromtDeleteRevervationAsync(DateTime start, DateTime end)
@@ -78,10 +66,10 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            var reservation = _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id);
+            var reservation = ReservationService.CurrentReservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id);
             if (reservation is not null)
             {
-                _reservations.Remove(reservation);
+                await ReservationService.RemoveRevervationAsync(reservation);
             }
         }
     }
