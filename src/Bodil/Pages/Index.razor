@@ -12,7 +12,7 @@
 
 <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
     <Appointments>
-        @foreach (var reservation in ReservationService.CurrentReservations)
+        @foreach (var reservation in ReservationService.Reservations)
         {
             <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
                 @reservation.Title
@@ -38,14 +38,7 @@
             await PromtDeleteRevervationAsync(start, end);
     }
 
-    async Task OnRequestNewData(DateTime start, DateTime end)
-    { 
-        if(!ReservationService.HasRevervationsInInterval(start, end))
-        {
-            var resevations = await ReservationService.GetReservationsAsync(start, end);
-            ReservationService.CurrentReservations.AddRange(resevations);
-        }
-    }
+    async Task OnRequestNewData(DateTime start, DateTime end) => await ReservationService.RequestNewReservationsAsync(start, end);
 
     async Task AddNewReservationAsync(DateTime start, DateTime end)
     {
@@ -66,7 +59,7 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            var reservation = ReservationService.CurrentReservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id);
+            var reservation = ReservationService.FindReservation(user.Id, start, end);
             if (reservation is not null)
             {
                 await ReservationService.RemoveRevervationAsync(reservation);
