@@ -17,6 +17,8 @@ namespace Bodil.Database
                 Id = Guid.Parse("e38f3987-e112-4dc7-a024-9322855ddee1"),
                 FirstName = "Bjørn",
                 LastName = "Rosland",
+                Email = "bjoernrosland@gmail.com",
+                PhoneNumber = 99247917,
                 RevervationColor = "aqua"
             });
         }

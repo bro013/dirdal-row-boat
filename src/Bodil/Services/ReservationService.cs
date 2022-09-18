@@ -37,6 +37,7 @@ namespace Bodil.Services
             {
                 return await _db.Reservations
                     .Where(res => res.Start >= start && res.End <= end)
+                    .Include(res => res.User)
                     .ToListAsync();
 
             }

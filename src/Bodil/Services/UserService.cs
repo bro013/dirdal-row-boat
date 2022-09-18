@@ -18,11 +18,13 @@ namespace Bodil.Services
             Id = Guid.Parse("e38f3987-e112-4dc7-a024-9322855ddee1"),
             FirstName = "Bjørn",
             LastName = "Rosland",
+            Email = "bjoernrosland@gmail.com",
+            PhoneNumber = 99247917,
             RevervationColor = "aqua"
         });
 
         public async Task<IEnumerable<User>> GetUsersAsync() => await _db.Users.ToListAsync();
 
-        public async Task<User> GetUserAsync(Guid userId) => await _db.Users.Where(user => user.Id.Equals(userId)).FirstOrDefaultAsync();
+        public async Task<User> GetUserAsync(Guid userId) => await _db.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
     }
 }

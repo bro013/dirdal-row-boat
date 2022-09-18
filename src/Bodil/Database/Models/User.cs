@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bodil.Database.Models
 {
@@ -14,5 +15,8 @@ namespace Bodil.Database.Models
         [EmailAddress]
         public string Email { get; set; }
         public string RevervationColor { get; set; }
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

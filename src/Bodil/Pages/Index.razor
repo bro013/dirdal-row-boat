@@ -37,11 +37,11 @@
         {
             var reservation = new Reservation()
                 {
-                    Title = "Bjørn Rosland",
+                    Title = user.FullName,
                     Start = start,
                     End = end,
                     UserId = user.Id,
-                    Color = "aqua"
+                    Color = user.RevervationColor
                 };
             await AddRevervationAsync(reservation);
         }
