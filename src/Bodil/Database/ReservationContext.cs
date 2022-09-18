@@ -19,7 +19,7 @@ namespace Bodil.Database
                 LastName = "Rosland",
                 Email = "bjoernrosland@gmail.com",
                 PhoneNumber = 99247917,
-                RevervationColor = "aqua"
+                Color = "aqua"
             });
         }
     }

@@ -14,7 +14,7 @@
     <Appointments>
         @foreach (var reservation in _reservations)
         {
-            <Appointment Start="@reservation.Start" End="@reservation.End" Color="@reservation.Color">
+            <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
                 @reservation.Title
             </Appointment>
         }
@@ -22,7 +22,7 @@
 </Scheduler>
 
 @code {
-    List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
+    List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1) } };
 
     User user = new();
 
@@ -41,7 +41,6 @@
                     Start = start,
                     End = end,
                     UserId = user.Id,
-                    Color = user.RevervationColor
                 };
             await AddRevervationAsync(reservation);
         }

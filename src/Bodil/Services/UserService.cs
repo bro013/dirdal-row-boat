@@ -20,7 +20,7 @@ namespace Bodil.Services
             LastName = "Rosland",
             Email = "bjoernrosland@gmail.com",
             PhoneNumber = 99247917,
-            RevervationColor = "aqua"
+            Color = "aqua"
         });
 
         public async Task<IEnumerable<User>> GetUsersAsync() => await _db.Users.ToListAsync();

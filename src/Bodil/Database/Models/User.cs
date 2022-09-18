@@ -14,7 +14,7 @@ namespace Bodil.Database.Models
         public long PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        public string RevervationColor { get; set; }
+        public string Color { get; set; }
 
         [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
