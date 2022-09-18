@@ -5,9 +5,8 @@
 @using Bodil.Services
 
 @inject ReservationService ReservationService
-@inject ISnackbar Snackbar
+@inject UserService UserService
 @inject IDialogService DialogService
-@inject ILogger<Index> Logger
 
 <PageTitle>Index</PageTitle>
 
@@ -25,11 +24,11 @@
 @code {
     List<Reservation> _reservations = new() { new Reservation() { Title = "Test", Start = DateTime.UtcNow, End = DateTime.Today.AddDays(1), Color = "aqua" } };
 
-    Guid userId;
+    User user = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        userId = Guid.NewGuid();
+        user = await UserService.GetTestUserAsync();
     }
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end)
@@ -41,7 +40,7 @@
                     Title = "Bjørn Rosland",
                     Start = start,
                     End = end,
-                    UserId = userId,
+                    UserId = user.Id,
                     Color = "aqua"
                 };
             await AddRevervationAsync(reservation);
@@ -58,13 +57,8 @@
         _reservations = await ReservationService.GetReservationsAsync(start, end);
     }
 
-    void OnOverflowAppointmentClick(DateTime day)
-    {
-        Logger.LogInformation(day.ToString());
-    }
-
     bool IsRevervationAvailable(DateTime start, DateTime end) =>
-        _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId) is null;
+        _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id) is null;
 
     async Task AddRevervationAsync(Reservation reservation)
     {
@@ -85,7 +79,7 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            var reservation = _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId);
+            var reservation = _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == user.Id);
             if (reservation is not null)
             {
                 _reservations.Remove(reservation);

@@ -14,6 +14,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddDbContext<ReservationContext>(options => options.UseInMemoryDatabase("dirdal-row-boat-database"));
 builder.Services.AddScoped<ReservationService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
