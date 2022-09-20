@@ -18,7 +18,7 @@ namespace Bodil.Database
                 FirstName = "Bjørn",
                 LastName = "Rosland",
                 Email = "bjoernrosland@gmail.com",
-                PhoneNumber = 99247917,
+                PhoneNumber = "+4799247917",
                 Color = "aqua"
             });
         }

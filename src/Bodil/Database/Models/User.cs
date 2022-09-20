@@ -11,7 +11,7 @@ namespace Bodil.Database.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public long PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
         public string Color { get; set; }
