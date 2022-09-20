@@ -3,18 +3,28 @@ using Bodil.Services;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
+var config = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", false, true)
+        .Build();
+
+var cs = config.GetConnectionString("Database");
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
-builder.Services.AddDbContext<ReservationContext>(options => options.UseInMemoryDatabase("dirdal-row-boat-database"));
+builder.Services.AddDbContextFactory<ReservationContext>(options => options.UseSqlServer(cs));
+builder.Services.AddDbContext<ReservationContext>(options => options.UseSqlServer(cs));
 builder.Services.AddScoped<ReservationService>();
 builder.Services.AddScoped<UserService>();
+
 
 var app = builder.Build();
 
