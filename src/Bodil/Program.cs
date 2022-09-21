@@ -12,6 +12,7 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 var config = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", false, true)
+        .AddJsonFile("appsettings.Development.json", false, true)
         .Build();
 
 var cs = config.GetConnectionString("Database");
