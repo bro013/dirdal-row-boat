@@ -6,11 +6,11 @@ namespace Bodil.Services
 {
     public class UserService
     {
-        private readonly ReservationContext _db;
+        private readonly IDbContextFactory<ReservationContext> _dbContextFactory;
 
-        public UserService(ReservationContext db)
+        public UserService(IDbContextFactory<ReservationContext> contextFactory)
         {
-            _db = db;
+            _dbContextFactory = contextFactory;
         }
 
         public async Task<User> GetTestUserAsync() => await Task.FromResult(new User()
@@ -23,8 +23,16 @@ namespace Bodil.Services
             Color = "aqua"
         });
 
-        public async Task<IEnumerable<User>> GetUsersAsync() => await _db.Users.ToListAsync();
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            return await context.Users.ToListAsync();
+        }
 
-        public async Task<User> GetUserAsync(Guid userId) => await _db.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
+        public async Task<User> GetUserAsync(Guid userId)
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            return await context.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
+        } 
     }
 }

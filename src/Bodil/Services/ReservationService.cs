@@ -7,14 +7,14 @@ namespace Bodil.Services
 {
     public class ReservationService
     {
-        private readonly ReservationContext _db;
+        private readonly IDbContextFactory<ReservationContext> _dbContextFactory;
         private readonly ILogger<ReservationService> _logger;
 
         public List<Reservation> Reservations { get; private set; } = new();
 
-        public ReservationService(ReservationContext db, ILogger<ReservationService> logger)
+        public ReservationService(IDbContextFactory<ReservationContext> contextFactory, ILogger<ReservationService> logger)
         {
-            _db = db;
+            _dbContextFactory = contextFactory;
             _logger = logger;
         }
 
@@ -23,9 +23,10 @@ namespace Bodil.Services
             try
             {
                 if (reservation == null) return;
-                _db.Reservations.Add(reservation);
+                using var context = await _dbContextFactory.CreateDbContextAsync();
+                context.Reservations.Add(reservation);
                 Reservations.Add(reservation);
-                await _db.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -38,9 +39,10 @@ namespace Bodil.Services
         {
             try
             {
-                _db.Reservations.Remove(reservation);
+                using var context = await _dbContextFactory.CreateDbContextAsync();
+                context.Reservations.Remove(reservation);
                 Reservations.Remove(reservation);
-                await _db.AddRangeAsync();
+                await context.AddRangeAsync();
             }
             catch(Exception ex)
             {
@@ -52,7 +54,8 @@ namespace Bodil.Services
         {
             try
             {
-                return await _db.Reservations
+                using var context = await _dbContextFactory.CreateDbContextAsync();
+                return await context.Reservations
                     .Where(res => res.Start >= start && res.End <= end)
                     .Include(res => res.User)
                     .ToListAsync();

@@ -21,9 +21,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddDbContextFactory<ReservationContext>(options => options.UseSqlServer(cs));
-builder.Services.AddDbContext<ReservationContext>(options => options.UseSqlServer(cs));
-builder.Services.AddScoped<ReservationService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<ReservationService>();
+builder.Services.AddSingleton<UserService>();
 
 
 var app = builder.Build();
