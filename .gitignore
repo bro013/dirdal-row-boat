@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Files containing secrets
-*/appsettings.Development.json
+src/Bodil/appsettings.Development.json
 
 # User-specific files
 *.rsuser
