@@ -25,8 +25,8 @@ namespace Bodil.Services
                 if (reservation == null) return;
                 using var context = await _dbContextFactory.CreateDbContextAsync();
                 context.Reservations.Add(reservation);
-                Reservations.Add(reservation);
                 await context.SaveChangesAsync();
+                Reservations.Add(reservation);
             }
             catch (Exception ex)
             {
@@ -39,10 +39,11 @@ namespace Bodil.Services
         {
             try
             {
+                if(reservation == null) return;
                 using var context = await _dbContextFactory.CreateDbContextAsync();
                 context.Reservations.Remove(reservation);
+                await context.SaveChangesAsync();
                 Reservations.Remove(reservation);
-                await context.AddRangeAsync();
             }
             catch(Exception ex)
             {
@@ -72,7 +73,8 @@ namespace Bodil.Services
             if (!HasRevervationsInInterval(start, end))
             {
                 var resevations = await GetReservationsAsync(start, end);
-                Reservations.AddRange(resevations);
+                var newReservations = resevations.Except(Reservations);
+                Reservations.AddRange(newReservations);
             }
         }
 
