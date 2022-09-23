@@ -27,8 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var users = await UserService.GetUsersAsync();
-        user = users.First();
+        user = await UserService.GetUserAsync();
     }
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end)

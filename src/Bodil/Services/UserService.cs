@@ -13,26 +13,27 @@ namespace Bodil.Services
             _dbContextFactory = contextFactory;
         }
 
-        public async Task<User> GetTestUserAsync() => await Task.FromResult(new User()
-        {
-            Id = Guid.Parse("e38f3987-e112-4dc7-a024-9322855ddee1"),
-            FirstName = "Bjørn",
-            LastName = "Rosland",
-            Email = "bjoernrosland@gmail.com",
-            PhoneNumber = "+4799247917",
-            Color = "aqua"
-        });
-
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
             return await context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserAsync(Guid userId)
+        public async Task<User> GetUserAsync(Guid? userId = null)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            return await context.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
-        } 
+
+            if(userId.HasValue)
+                return await context.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
+            else
+                return await context.Users.FirstAsync();
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+        }
     }
 }
