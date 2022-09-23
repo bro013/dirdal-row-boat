@@ -15,23 +15,28 @@
             <MudCardContent>
                 <MudGrid>
                     <MudItem xs="12">
-                        <MudTextField T="string" @bind-Value=user.FirstName Required=true RequiredError="Mangler fornavn" Label="Fornavn" Immediate=true></MudTextField>
+                        <MudTextField T="string" @bind-Value=user.FirstName Required=true RequiredError="Mangler fornavn"
+                                      Label="Fornavn" Immediate=true></MudTextField>
                     </MudItem>
                     <MudItem xs="12">
-                        <MudTextField T="string" @bind-Value=user.LastName Required=true RequiredError="Mangler etternavn" Label="Etternavn" Immediate=true></MudTextField>
+                        <MudTextField T="string" @bind-Value=user.LastName Required=true RequiredError="Mangler etternavn"
+                                      Label="Etternavn" Immediate=true></MudTextField>
                     </MudItem>
                     <MudItem xs="12">
-                        <MudTextField T="string" @bind-Value=user.Email Required=true RequiredError="Mangler epost" Label="Epost" InputMode="InputMode.email" Immediate=true></MudTextField>
+                        <MudTextField T="string" @bind-Value=user.Email Required=true RequiredError="Mangler epost"
+                                      Label="Epost" InputMode="InputMode.email" Immediate=true></MudTextField>
                     </MudItem>
                     <MudItem xs="12">
-                        <MudTextField T="string" @bind-Value=user.PhoneNumber Required=true RequiredError="Mangler telefonnummer" Label="Telefonnummer" Immediate=true></MudTextField>
+                        <MudTextField T="string" @bind-Value=user.PhoneNumber Required=true RequiredError="Mangler telefonnummer"
+                                      Label="Telefonnummer" Immediate=true></MudTextField>
                     </MudItem>
                 </MudGrid>
             </MudCardContent>
         </MudCard>
     </MudItem>
     <MudItem md="6" xs="12" Class="d-flex justify-center">
-        <MudColorPicker @bind-Text=user.Color DisableAlpha=true DisableColorField=false DisablePreview=false DisableToolbar=false DisableInputs=true
+        <MudColorPicker @bind-Text=user.Color DisableAlpha=true DisableColorField=false
+                        DisablePreview=false DisableToolbar=false DisableInputs=true
                         ColorPickerMode="ColorPickerMode.RGB" PickerVariant="PickerVariant.Static" />
     </MudItem>
     <MudItem xs="12">
