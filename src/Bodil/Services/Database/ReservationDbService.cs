@@ -1,5 +1,5 @@
 ﻿using Bodil.Database;
-using Bodil.Database.Models;
+using Bodil.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bodil.Services.Database

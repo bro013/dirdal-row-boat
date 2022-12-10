@@ -1,4 +1,4 @@
-﻿using Bodil.Database.Models;
+﻿using Bodil.Models;
 
 namespace Bodil.Services.InMemory
 {

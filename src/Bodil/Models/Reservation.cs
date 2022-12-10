@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bodil.Database.Models
+namespace Bodil.Models
 {
     public class Reservation
     {

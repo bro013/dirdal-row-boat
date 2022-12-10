@@ -1,4 +1,4 @@
-﻿using Bodil.Database.Models;
+﻿using Bodil.Models;
 using Bodil.Shared;
 using MudBlazor;
 
