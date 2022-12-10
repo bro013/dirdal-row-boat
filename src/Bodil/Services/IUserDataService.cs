@@ -2,7 +2,7 @@
 
 namespace Bodil.Services
 {
-    public interface IUserService
+    public interface IUserDataService
     {
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User> GetUserAsync(Guid userId);

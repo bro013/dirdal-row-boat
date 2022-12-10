@@ -4,15 +4,15 @@
 @using Bodil.Database.Models
 @using Bodil.Services;
 
-@inject IReservationService ReservationService
-@inject IUserService UserService
+@inject ReservationService ReservationService
+@inject IUserDataService UserService
 @inject IDialogService DialogService
 
 <PageTitle>Index</PageTitle>
 
 <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
     <Appointments>
-        @foreach (var reservation in reservations)
+        @foreach (var reservation in ReservationService.Reservations)
         {
             <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
                 @reservation.Title
@@ -24,7 +24,6 @@
 @code {
 
     User user = new();
-    List<Reservation> reservations = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,63 +31,8 @@
         user = await UserService.GetUserAsync(userId);
     }
 
-    async Task OnAddingNewAppointment(DateTime start, DateTime end)
-    {
-        await FetchNewReservationsAsync(start, end);
-        if (IsReservationAvailable(user.Id, start, end))
-            await AddNewReservationAsync(start, end);
-        else
-            await PromtDeleteRevervationAsync(start, end);
-    }
+    async Task OnAddingNewAppointment(DateTime start, DateTime end) => await ReservationService.AddReservation(user, start, end);
 
-    async Task OnRequestNewData(DateTime start, DateTime end) => await FetchNewReservationsAsync(start, end);
+    async Task OnRequestNewData(DateTime start, DateTime end) => await ReservationService.GetReservationsAsync(start, end);
 
-    async Task AddNewReservationAsync(DateTime start, DateTime end)
-    {
-        var reservation = new Reservation()
-            {
-                Id = Guid.NewGuid(),
-                Title = user.FullName,
-                Start = start,
-                End = end,
-                UserId = user.Id,
-            };
-        await ReservationService.AddReservationAsync(reservation);
-        reservations.Add(reservation);
-    }
-
-    async Task PromtDeleteRevervationAsync(DateTime start, DateTime end)
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = DialogService.Show<ReservationDialog>("Revervasjon", options);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            var reservation = FindReservation(user.Id, start, end);
-            if (reservation is not null)
-            {
-                await ReservationService.DeleteRevervationAsync(reservation);
-                reservations.Remove(reservation);
-            }
-        }
-    }
-
-    async Task FetchNewReservationsAsync(DateTime start, DateTime end)
-    {
-        if (!HasRevervationsInInterval(start, end))
-        {
-            var resevations = await ReservationService.GetReservationsAsync(start, end);
-            var newReservations = resevations.Except(reservations);
-            reservations.AddRange(newReservations);
-        }
-    }
-
-    Reservation? FindReservation(Guid userId, DateTime start, DateTime end) =>
-        reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId);
-
-    bool IsReservationAvailable(Guid userId, DateTime start, DateTime end) =>
-        FindReservation(userId, start, end) is null;
-
-    bool HasRevervationsInInterval(DateTime start, DateTime end) =>
-        reservations.Where(r => r.Start >= start && r.End <= end).Any();
 }

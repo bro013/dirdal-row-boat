@@ -2,7 +2,7 @@
 
 namespace Bodil.Services.InMemory
 {
-    public class UserInMemoryService : IUserService
+    public class UserInMemoryService : IUserDataService
     {
         private List<User> _users;
 

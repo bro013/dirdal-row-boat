@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bodil.Services.Database
 {
-    public class ReservationDbService : IReservationService
+    public class ReservationDbService : IReservationDataService
     {
         private readonly IDbContextFactory<ReservationContext> _dbContextFactory;
         private readonly ILogger<ReservationDbService> _logger;

@@ -20,8 +20,9 @@ builder.Services.AddMudServices();
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(option => { option.DetailedErrors = true; });
 
-builder.Services.AddScoped<IReservationService, ReservationInMemoryService>();
-builder.Services.AddScoped<IUserService, UserInMemoryService>();
+builder.Services.AddSingleton<IReservationDataService, ReservationInMemoryService>();
+builder.Services.AddSingleton<IUserDataService, UserInMemoryService>();
+builder.Services.AddScoped<ReservationService>();
 
 
 var app = builder.Build();

@@ -2,7 +2,7 @@
 
 namespace Bodil.Services.InMemory
 {
-    public class ReservationInMemoryService : IReservationService
+    public class ReservationInMemoryService : IReservationDataService
     {
         private List<Reservation> _reservations = new();
 

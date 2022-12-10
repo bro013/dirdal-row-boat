@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bodil.Services.Database
 {
-    public class UserDbService : IUserService
+    public class UserDbService : IUserDataService
     {
         private readonly IDbContextFactory<ReservationContext> _dbContextFactory;
 
