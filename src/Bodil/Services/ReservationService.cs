@@ -1,6 +1,7 @@
 ﻿using Bodil.Models;
 using Bodil.Shared;
 using MudBlazor;
+using System.Collections.Concurrent;
 
 namespace Bodil.Services
 {
@@ -23,7 +24,10 @@ namespace Bodil.Services
             {
                 var reservations = await _reservationDataService.GetReservationsAsync(start, end);
                 var newReservations = reservations.Except(Reservations);
-                Reservations.AddRange(newReservations);
+                lock (Reservations)
+                {
+                    Reservations.AddRange(newReservations);
+                }
             }
         }
 
