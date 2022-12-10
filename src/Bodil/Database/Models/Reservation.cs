@@ -12,7 +12,7 @@ namespace Bodil.Database.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj == null) return false;
             var reservation = obj as Reservation;

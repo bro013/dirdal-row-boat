@@ -16,9 +16,10 @@ var config = new ConfigurationBuilder()
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor()
-    .AddCircuitOptions(option => { option.DetailedErrors = true; }); ;
 builder.Services.AddMudServices();
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(option => { option.DetailedErrors = true; });
+
 builder.Services.AddScoped<IReservationService, ReservationMockService>();
 builder.Services.AddScoped<IUserService, UserMockService>();
 

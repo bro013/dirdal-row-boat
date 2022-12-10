@@ -47,13 +47,14 @@
     {
         var reservation = new Reservation()
             {
+                Id = Guid.NewGuid(),
                 Title = user.FullName,
                 Start = start,
                 End = end,
                 UserId = user.Id,
             };
         await ReservationService.AddReservationAsync(reservation);
-        reservations = (await ReservationService.GetReservationsAsync(start, end)).ToList();
+        reservations.Add(reservation);
     }
 
     async Task PromtDeleteRevervationAsync(DateTime start, DateTime end)
@@ -67,6 +68,7 @@
             if (reservation is not null)
             {
                 await ReservationService.DeleteRevervationAsync(reservation);
+                reservations.Remove(reservation);
             }
         }
     }
