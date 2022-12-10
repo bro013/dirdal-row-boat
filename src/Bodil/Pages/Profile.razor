@@ -3,7 +3,7 @@
 @using Bodil.Database.Models
 @using Bodil.Services
 
-@inject UserService UserService
+@inject IUserService UserService
 @inject ISnackbar Snackbar
 
 <PageTitle>Profil</PageTitle>
@@ -51,7 +51,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserService.GetUserAsync();
+        var userId = Guid.Parse("fe108034-9d68-4673-9d6b-c89ebc94a7d0");
+        user = await UserService.GetUserAsync(userId);
     }
 
     async Task UpdateUserAsync()
