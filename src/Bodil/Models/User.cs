@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Azure;
+using Azure.Data.Tables;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bodil.Models
 {
-    public class User
+    public class User : ITableEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -16,7 +18,11 @@ namespace Bodil.Models
         public string Email { get; set; }
         public string Color { get; set; }
 
-        [NotMapped]
         public string FullName => $"{FirstName} {LastName}";
+
+        public string PartitionKey { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string RowKey { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTimeOffset? Timestamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ETag ETag { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

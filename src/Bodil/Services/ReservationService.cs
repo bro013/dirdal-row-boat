@@ -22,13 +22,14 @@ namespace Bodil.Services
             if (!HasRevervationsInInterval(start, end))
             {
                 var reservations = await _reservationDataService.GetReservationsAsync(start, end);
-                var newReservations = Reservations.Except(reservations);
+                var newReservations = reservations.Except(Reservations);
                 Reservations.AddRange(newReservations);
             }
         }
 
         public async Task AddReservation(User user, DateTime start, DateTime end)
         {
+
             if (IsReservationAvailable(user.Id, start, end))
                 await InsertReservationAsync(user, start, end);
             else

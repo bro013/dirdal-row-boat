@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Azure;
+using Azure.Data.Tables;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bodil.Models
 {
-    public class Reservation
+    public class Reservation : ITableEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -11,6 +13,14 @@ namespace Bodil.Models
         public string Title { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public string PartitionKey
+        {
+            get => Start.ToString("yyyyMM");
+            set { }
+        }
+        public string RowKey { get; set; } = Guid.NewGuid().ToString();
+        public DateTimeOffset? Timestamp { get; set; }
+        public ETag ETag { get; set; } = ETag.All;
 
         public override bool Equals(object obj)
         {
