@@ -20,9 +20,9 @@ namespace Bodil.Models
 
         public string FullName => $"{FirstName} {LastName}";
 
-        public string PartitionKey { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string RowKey { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTimeOffset? Timestamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ETag ETag { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string PartitionKey { get; set; } = "users";
+        public string RowKey { get; set; } = Guid.NewGuid().ToString();
+        public DateTimeOffset? Timestamp { get; set; }
+        public ETag ETag { get; set; } = ETag.All;
     }
 }

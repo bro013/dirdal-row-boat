@@ -22,13 +22,18 @@ namespace Bodil.Services.Database
         public async Task<User> GetUserAsync(Guid userId)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            return await context.Users.Where(user => user.Id.Equals(userId)).SingleAsync();
+            return await context.Users.Where(user => user.Id.Equals(userId)).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpsertUserAsync(User user)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            context.Users.Update(user);
+
+            if((await GetUserAsync(user.Id)) is null)
+                context.Users.Update(user);
+            else
+                context.Users.Add(user);
+
             await context.SaveChangesAsync();
         }
 

@@ -57,7 +57,7 @@
 
     async Task UpdateUserAsync()
     {
-        await UserService.UpdateUserAsync(user);
+        await UserService.UpsertUserAsync(user);
         Snackbar.Add("Profilen din har blitt oppdatert", Severity.Success);
     }
 }

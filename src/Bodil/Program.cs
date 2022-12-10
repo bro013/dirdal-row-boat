@@ -22,7 +22,7 @@ builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(option => { option.DetailedErrors = true; });
 
 builder.Services.AddSingleton<IReservationDataService, ReservationTableService>();
-builder.Services.AddSingleton<IUserDataService, UserInMemoryService>();
+builder.Services.AddSingleton<IUserDataService, UserTableStorage>();
 builder.Services.AddSingleton<TableClientFactory>();
 builder.Services.AddScoped<ReservationService>();
 

@@ -6,7 +6,7 @@ namespace Bodil.Services
     {
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User> GetUserAsync(Guid userId);
-        Task UpdateUserAsync(User user);
+        Task UpsertUserAsync(User user);
         Task DeleteUserAsync(Guid userId);
     }
 }

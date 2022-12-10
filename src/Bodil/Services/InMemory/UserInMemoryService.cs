@@ -58,20 +58,13 @@ namespace Bodil.Services.InMemory
             return Task.FromResult(_users.AsEnumerable());
         }
 
-        public Task UpdateUserAsync(User user)
+        public Task UpsertUserAsync(User user)
         {
             var deleteUser = _users.Find(u => u.Id == user.Id);
             if (deleteUser is not null)
-            {
                 _users.Remove(deleteUser);
-                _users.Add(user);
-                return Task.CompletedTask;
-            }
-            else
-            {
-                return Task.FromException(new ArgumentNullException(nameof(user)));
-            }
-
+            _users.Add(user);
+            return Task.CompletedTask;
         }
     }
 }
