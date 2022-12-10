@@ -1,12 +1,12 @@
 ﻿using Bodil.Database.Models;
 
-namespace Bodil.Services.Mocks
+namespace Bodil.Services.InMemory
 {
-    public class UserMockService : IUserService
+    public class UserInMemoryService : IUserService
     {
         private List<User> _users;
 
-        public UserMockService()
+        public UserInMemoryService()
         {
             _users = new List<User>()
             {

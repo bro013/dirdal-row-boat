@@ -1,5 +1,5 @@
 using Bodil.Services;
-using Bodil.Services.Mocks;
+using Bodil.Services.InMemory;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
 
@@ -20,8 +20,8 @@ builder.Services.AddMudServices();
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(option => { option.DetailedErrors = true; });
 
-builder.Services.AddScoped<IReservationService, ReservationMockService>();
-builder.Services.AddScoped<IUserService, UserMockService>();
+builder.Services.AddScoped<IReservationService, ReservationInMemoryService>();
+builder.Services.AddScoped<IUserService, UserInMemoryService>();
 
 
 var app = builder.Build();

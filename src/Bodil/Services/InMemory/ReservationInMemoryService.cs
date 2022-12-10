@@ -1,8 +1,8 @@
 ﻿using Bodil.Database.Models;
 
-namespace Bodil.Services.Mocks
+namespace Bodil.Services.InMemory
 {
-    public class ReservationMockService : IReservationService
+    public class ReservationInMemoryService : IReservationService
     {
         private List<Reservation> _reservations = new();
 
