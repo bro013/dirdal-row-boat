@@ -11,6 +11,7 @@ namespace Bodil.Services.TableStorage
         public ReservationTableService(TableClientFactory tableClientFactory)
         {
             _tableClient = tableClientFactory.GetTableClient("reservations");
+            _tableClient.CreateIfNotExists();
         }
 
         public async Task AddReservationAsync(Reservation reservation)
