@@ -4,7 +4,8 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:61949",
-      "sslPort": 44393
+      "sslPort": 44393,
+      "AZURE_KEYVAULT_URI": "https://kv-bodil.vault.azure.net/"
     }
   },
   "profiles": {
@@ -12,7 +13,8 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_KEYVAULT_URI": "https://kv-bodil.vault.azure.net/"
       }
     },
     "Bodil": {
@@ -21,7 +23,8 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_KEYVAULT_URI": "https://kv-bodil.vault.azure.net/"
       }
     }
   }
