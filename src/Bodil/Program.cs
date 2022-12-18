@@ -11,23 +11,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
+// Add configuration
 var keyVaultUri = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URI") ?? throw new ArgumentNullException("Missing key vault URI");
 
 var config = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", false, true)
         .AddJsonFile("appsettings.Development.json", true, true)
+        .AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential())
 .Build();
 
+builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 
 // Add services to the container.
 
-var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ');
+var initialScopes = config["DownstreamApi:Scopes"]?.Split(' ');
 
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
+    .AddMicrosoftIdentityWebApp(config.GetSection("AzureAd"))
         .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
-            .AddMicrosoftGraph(builder.Configuration.GetSection("DownstreamApi"))
+            .AddMicrosoftGraph(config.GetSection("DownstreamApi"))
             .AddInMemoryTokenCaches();
 
 builder.Services.AddControllersWithViews()
@@ -48,8 +51,6 @@ builder.Services.AddSingleton<IUserDataService, UserTableStorage>();
 builder.Services.AddSingleton<TableClientFactory>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 
-// Add configuration
-builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 
 var app = builder.Build();
 
