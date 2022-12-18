@@ -27,7 +27,7 @@ namespace Bodil.Services
             return _reservations;
         }
 
-        public async Task AddReservation(User user, DateTime start, DateTime end)
+        public async Task AddReservation(AppUser user, DateTime start, DateTime end)
         {
             if (IsReservationAvailable(user.Id, start, end))
                 await InsertReservationAsync(user, start, end);
@@ -41,7 +41,7 @@ namespace Bodil.Services
             _reservations.Remove(reservation);
         }
 
-        private async Task PromtDeleteRevervationAsync(User user, DateTime start, DateTime end)
+        private async Task PromtDeleteRevervationAsync(AppUser user, DateTime start, DateTime end)
         {
             var options = new DialogOptions { CloseOnEscapeKey = true };
             var dialog = _dialogService.Show<ReservationDialog>("Revervasjon", options);
@@ -56,7 +56,7 @@ namespace Bodil.Services
             }
         }
 
-        private async Task InsertReservationAsync(User user, DateTime start, DateTime end)
+        private async Task InsertReservationAsync(AppUser user, DateTime start, DateTime end)
         {
             var reservation = new Reservation()
             {

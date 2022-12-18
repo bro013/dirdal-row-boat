@@ -4,13 +4,13 @@ namespace Bodil.Services.InMemory
 {
     public class UserInMemoryService : IUserDataService
     {
-        private List<User> _users;
+        private List<AppUser> _users;
 
         public UserInMemoryService()
         {
-            _users = new List<User>()
+            _users = new List<AppUser>()
             {
-                new User()
+                new AppUser()
                 {
                     Id = Guid.Parse("fe108034-9d68-4673-9d6b-c89ebc94a7d0"),
                     FirstName = "Bjørn",
@@ -19,7 +19,7 @@ namespace Bodil.Services.InMemory
                     PhoneNumber = "99247917",
                     Email = "bjoernrosland@gmail.com"
                 },
-                new User()
+                new AppUser()
                 {
                     Id = Guid.NewGuid(),
                     FirstName = "Jane",
@@ -28,7 +28,7 @@ namespace Bodil.Services.InMemory
                     PhoneNumber = "33237919",
                     Email = "jane.doe@gmail.com"
                 },
-                new User()
+                new AppUser()
                 {
                     Id = Guid.NewGuid(),
                     FirstName = "¨John",
@@ -47,18 +47,18 @@ namespace Bodil.Services.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<User> GetUserAsync(Guid userId)
+        public Task<AppUser> GetUserAsync(Guid userId)
         {
             var user = _users.Find(u => u.Id == userId);
             return Task.FromResult(user);
         }
 
-        public Task<IEnumerable<User>> GetUsersAsync()
+        public Task<IEnumerable<AppUser>> GetUsersAsync()
         {
             return Task.FromResult(_users.AsEnumerable());
         }
 
-        public Task UpsertUserAsync(User user)
+        public Task UpsertUserAsync(AppUser user)
         {
             var deleteUser = _users.Find(u => u.Id == user.Id);
             if (deleteUser is not null)

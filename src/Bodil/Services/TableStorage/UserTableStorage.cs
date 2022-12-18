@@ -18,21 +18,21 @@ namespace Bodil.Services.TableStorage
             await _tableClient.DeleteEntityAsync(user.PartitionKey, user.RowKey, ETag.All);
         }
 
-        public async Task<User> GetUserAsync(Guid userId)
+        public async Task<AppUser> GetUserAsync(Guid userId)
         {
-            var resultPages = _tableClient.QueryAsync<User>(user => user.Id.Equals(userId)).GetAsyncEnumerator();
+            var resultPages = _tableClient.QueryAsync<AppUser>(user => user.Id.Equals(userId)).GetAsyncEnumerator();
             await resultPages.MoveNextAsync();
             return resultPages.Current;
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
-            var users = new List<User>();
-            await foreach (var user in _tableClient.QueryAsync<User>()) users.Add(user);
+            var users = new List<AppUser>();
+            await foreach (var user in _tableClient.QueryAsync<AppUser>()) users.Add(user);
             return users;
         }
 
-        public async Task UpsertUserAsync(User user) =>
+        public async Task UpsertUserAsync(AppUser user) =>
             await _tableClient.UpsertEntityAsync(user);
     }
 }

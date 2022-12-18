@@ -13,19 +13,19 @@ namespace Bodil.Services.Database
             _dbContextFactory = contextFactory;
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
             return await context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserAsync(Guid userId)
+        public async Task<AppUser> GetUserAsync(Guid userId)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
             return await context.Users.Where(user => user.Id.Equals(userId)).FirstOrDefaultAsync();
         }
 
-        public async Task UpsertUserAsync(User user)
+        public async Task UpsertUserAsync(AppUser user)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
 

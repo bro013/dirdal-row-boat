@@ -8,11 +8,11 @@ namespace Bodil.Database
         public ReservationContext(DbContextOptions<ReservationContext> options) : base(options) { }
 
         public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<AppUser> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(new User()
+            modelBuilder.Entity<AppUser>().HasData(new AppUser()
             {
                 Id = Guid.Parse("e38f3987-e112-4dc7-a024-9322855ddee1"),
                 FirstName = "Bjørn",
