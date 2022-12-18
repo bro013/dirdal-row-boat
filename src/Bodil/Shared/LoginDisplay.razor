@@ -1,0 +1,15 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <MudGrid Justify="Justify.FlexEnd">
+            <MudItem xs="6">
+                <MudText>@context.User.Identity?.Name!</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Href="MicrosoftIdentity/Account/SignOut" Target="_blank" Variant="Variant.Outlined" Color="Color.Success">Logg ut</MudButton>
+            </MudItem>
+        </MudGrid>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton Href="MicrosoftIdentity/Account/SignIn" Target="_blank" Variant="Variant.Outlined" Color="Color.Success">Logg inn</MudButton>
+    </NotAuthorized>
+</AuthorizeView>
