@@ -1,6 +1,5 @@
 ﻿using Azure.Data.Tables;
 using Bodil.Models;
-using System.Text.Json;
 
 namespace Bodil.Services.TableStorage
 {
