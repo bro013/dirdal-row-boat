@@ -6,6 +6,6 @@ namespace Bodil.Services
     {
         Task AddReservation(User user, DateTime start, DateTime end);
         Task DeleteReservation(Reservation reservation);
-        Task GetReservationsAsync(DateTime start, DateTime end);
+        Task<List<Reservation>> GetReservationsAsync(DateTime start, DateTime end);
     }
 }

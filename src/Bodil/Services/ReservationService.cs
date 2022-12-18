@@ -1,14 +1,12 @@
 ﻿using Bodil.Models;
 using Bodil.Shared;
 using MudBlazor;
-using System.Collections.Concurrent;
 
 namespace Bodil.Services
 {
     public class ReservationService : IReservationService
     {
-        public List<Reservation> Reservations { get; private set; } = new List<Reservation>();
-
+        private readonly List<Reservation> _reservations = new();
         private readonly IReservationDataService _reservationDataService;
         private readonly IDialogService _dialogService;
 
@@ -18,22 +16,19 @@ namespace Bodil.Services
             _dialogService = dialogService;
         }
 
-        public async Task GetReservationsAsync(DateTime start, DateTime end)
+        public async Task<List<Reservation>> GetReservationsAsync(DateTime start, DateTime end)
         {
             if (!HasRevervationsInInterval(start, end))
             {
                 var reservations = await _reservationDataService.GetReservationsAsync(start, end);
-                var newReservations = reservations.Except(Reservations);
-                lock (Reservations)
-                {
-                    Reservations.AddRange(newReservations);
-                }
+                var newReservations = reservations.Except(_reservations).ToList();
+                _reservations.AddRange(newReservations);
             }
+            return _reservations;
         }
 
         public async Task AddReservation(User user, DateTime start, DateTime end)
         {
-
             if (IsReservationAvailable(user.Id, start, end))
                 await InsertReservationAsync(user, start, end);
             else
@@ -43,7 +38,7 @@ namespace Bodil.Services
         public async Task DeleteReservation(Reservation reservation)
         {
             await _reservationDataService.DeleteRevervationAsync(reservation);
-            Reservations.Remove(reservation);
+            _reservations.Remove(reservation);
         }
 
         private async Task PromtDeleteRevervationAsync(User user, DateTime start, DateTime end)
@@ -72,17 +67,17 @@ namespace Bodil.Services
                 UserId = user.Id,
             };
             await _reservationDataService.AddReservationAsync(reservation);
-            Reservations.Add(reservation);
+            _reservations.Add(reservation);
         }
 
         Reservation? FindReservation(Guid userId, DateTime start, DateTime end) =>
-            Reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId);
+            _reservations.Find(r => r.Start >= start && r.End <= end && r.UserId == userId);
 
         bool IsReservationAvailable(Guid userId, DateTime start, DateTime end) =>
             FindReservation(userId, start, end) is null;
 
         bool HasRevervationsInInterval(DateTime start, DateTime end) =>
-            Reservations.Where(r => r.Start >= start && r.End <= end).Any();
+            _reservations.Where(r => r.Start >= start && r.End <= end).Any();
 
     }
 }

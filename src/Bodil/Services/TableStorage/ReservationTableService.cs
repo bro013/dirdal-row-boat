@@ -27,9 +27,20 @@ namespace Bodil.Services.TableStorage
         public async Task<IEnumerable<Reservation>> GetReservationsAsync(DateTime start, DateTime end)
         {
             var reservations = new List<Reservation>();
-            var rowKey = end.ToString("yyyyMM");
+            var reservationTasks = new List<Task<IEnumerable<Reservation>>>();
+            for (var dt = start; dt <= end; dt = dt.AddMonths(1))
+                reservationTasks.Add(GetReservationsAsync(dt));
+            var results = await Task.WhenAll(reservationTasks);
+            return results?.SelectMany(result => result) ?? Enumerable.Empty<Reservation>();
+        }
+
+        public async Task<IEnumerable<Reservation>> GetReservationsAsync(DateTime dt)
+        {
+            var reservations = new List<Reservation>();
+            var rowKey = dt.ToString("yyyyMM");
             var resultPages = _tableClient.QueryAsync<Reservation>(filter: $"PartitionKey eq '{rowKey}'");
-            await foreach (var reservation in resultPages) reservations.Add(reservation);
+            await foreach (var reservation in resultPages)
+                reservations.Add(reservation);
             return reservations;
         }
     }

@@ -24,7 +24,7 @@ builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.Deta
 builder.Services.AddSingleton<IReservationDataService, ReservationTableService>();
 builder.Services.AddSingleton<IUserDataService, UserTableStorage>();
 builder.Services.AddSingleton<TableClientFactory>();
-builder.Services.AddScoped<ReservationService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 // Add configuration
 builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());

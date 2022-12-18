@@ -4,15 +4,14 @@
 @using Bodil.Services;
 @using Bodil.Models;
 
-@inject ReservationService ReservationService
+@inject IReservationService ReservationService
 @inject IUserDataService UserService
-@inject IDialogService DialogService
 
 <PageTitle>Index</PageTitle>
 
 <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
     <Appointments>
-        @foreach (var reservation in ReservationService.Reservations)
+        @foreach (var reservation in reservations)
         {
             <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
                 @reservation.Title
@@ -24,6 +23,7 @@
 @code {
 
     User user = new();
+    List<Reservation> reservations = new(); 
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,6 +33,5 @@
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end) => await ReservationService.AddReservation(user, start, end);
 
-    async Task OnRequestNewData(DateTime start, DateTime end) => await ReservationService.GetReservationsAsync(start, end);
-
+    async Task OnRequestNewData(DateTime start, DateTime end) => reservations = await ReservationService.GetReservationsAsync(start, end);
 }
