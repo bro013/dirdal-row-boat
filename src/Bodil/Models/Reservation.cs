@@ -26,7 +26,7 @@ namespace Bodil.Models
         {
             if (obj == null) return false;
             var reservation = obj as Reservation;
-            return reservation.Id == Id;
+            return reservation?.Id == Id;
         }
 
         public override int GetHashCode() => Id.GetHashCode();
