@@ -1,7 +1,10 @@
 using Azure.Identity;
 using Bodil.Services;
 using Bodil.Services.TableStorage;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +21,27 @@ var config = new ConfigurationBuilder()
 
 
 // Add services to the container.
+
+var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ');
+
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
+        .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
+            .AddMicrosoftGraph(builder.Configuration.GetSection("DownstreamApi"))
+            .AddInMemoryTokenCaches();
+builder.Services.AddControllersWithViews()
+    .AddMicrosoftIdentityUI();
+
+builder.Services.AddAuthorization(options =>
+{
+    // By default, all incoming requests will be authorized according to the default policy
+    options.FallbackPolicy = options.DefaultPolicy;
+});
 builder.Services.AddRazorPages();
 builder.Services.AddMudServices();
-builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
+builder.Services.AddServerSideBlazor()
+    .AddMicrosoftIdentityConsentHandler()
+    .AddCircuitOptions(option => { option.DetailedErrors = true; });
 builder.Services.AddSingleton<IReservationDataService, ReservationTableService>();
 builder.Services.AddSingleton<IUserDataService, UserTableStorage>();
 builder.Services.AddSingleton<TableClientFactory>();
