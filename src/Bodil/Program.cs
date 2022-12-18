@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add configuration
-var keyVaultUri = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URI") ?? throw new ArgumentNullException("Missing key vault URI");
+//var keyVaultUri = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URI") ?? throw new ArgumentNullException("Missing key vault URI");
+var keyVaultUri = "https://kv-bodil.vault.azure.net/";
 
 var config = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
