@@ -4,21 +4,28 @@
 @using Bodil.Services;
 @using Bodil.Models;
 
+
 @inject IReservationService ReservationService
 @inject IUserDataService UserService
 
 <PageTitle>Index</PageTitle>
-
-<Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
-    <Appointments>
-        @foreach (var reservation in reservations)
-        {
-            <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
-                @reservation.Title
-            </Appointment>
-        }
-    </Appointments>
-</Scheduler>
+<AuthorizeView Context="userContext">
+    <Authorized>
+        <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false>
+            <Appointments>
+                @foreach (var reservation in reservations)
+                {
+                    <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
+                        @reservation.Title
+                    </Appointment>
+                }
+            </Appointments>
+        </Scheduler>
+    </Authorized>
+    <NotAuthorized>
+        <MudText Typo="Typo.h2">Du er ikke logget inn</MudText>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 
