@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bodil.Models
 {
-    public class User : ITableEntity
+    public class AppUser : ITableEntity
     {
         [Key]
         public Guid Id { get; set; }
