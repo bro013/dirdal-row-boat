@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Bodil.Services;
 using Bodil.Services.TableStorage;
+using Bodil.States;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.Identity.Web;
@@ -47,11 +48,16 @@ builder.Services.AddMudServices();
 builder.Services.AddServerSideBlazor()
     .AddMicrosoftIdentityConsentHandler()
     .AddCircuitOptions(option => { option.DetailedErrors = true; });
+
+//Data
 builder.Services.AddSingleton<IReservationDataService, ReservationTableService>();
 builder.Services.AddSingleton<IUserDataService, UserTableStorage>();
 builder.Services.AddSingleton<TableClientFactory>();
-builder.Services.AddScoped<IReservationService, ReservationService>();
 
+// Misc
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<UserState>();
 
 var app = builder.Build();
 

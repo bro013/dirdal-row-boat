@@ -2,9 +2,11 @@
 
 @using Bodil.Models
 @using Bodil.Services
+@using Bodil.States;
 
-@inject IUserDataService UserService
+@inject IUserService UserService
 @inject ISnackbar Snackbar
+@inject UserState UserState
 
 <PageTitle>Profil</PageTitle>
 
@@ -51,13 +53,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = Guid.Parse("fe108034-9d68-4673-9d6b-c89ebc94a7d0");
-        user = await UserService.GetUserAsync(userId);
+        if (!UserState.IsLoggedIn)
+            await UserService.LoginAsync();
+
+        user = await UserService.GetUserAsync(UserState.UserId);
     }
 
     async Task UpdateUserAsync()
     {
-        await UserService.UpsertUserAsync(user);
+        await UserService.UpdateUserAsync(user);
         Snackbar.Add("Profilen din har blitt oppdatert", Severity.Success);
     }
 }

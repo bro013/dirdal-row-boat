@@ -1,38 +1,44 @@
 ﻿using Bodil.Models;
+using Bodil.States;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
-using System.Net.Http;
 
 namespace Bodil.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserDataService _userData;
-        private readonly ITokenAcquisition _tokenAcquisitionService;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly MicrosoftIdentityConsentAndConditionalAccessHandler _consentHandler;
+        private readonly GraphServiceClient _graphServiceClient;
+        private readonly UserState _userState;
 
-        public UserService(IUserDataService userData, ITokenAcquisition tokenAcquisitionService, IHttpClientFactory httpClientFactory)
+        public UserService(IUserDataService userData,
+            MicrosoftIdentityConsentAndConditionalAccessHandler consentHandler,
+            GraphServiceClient graphServiceClient,
+            UserState userState)
         {
             _userData = userData;
-            _tokenAcquisitionService = tokenAcquisitionService;
-            _httpClientFactory = httpClientFactory;
+            _consentHandler = consentHandler;
+            _graphServiceClient = graphServiceClient;
+            _userState = userState;
         }
-        public async Task<AppUser> GetUserAsync()
+        public async Task LoginAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-
-            // get a token
-            var token = await _tokenAcquisitionService.GetAccessTokenForUserAsync(new string[] { "User.Read", "Mail.Read" });
-
-            // make API call
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var dataRequest = await httpClient.GetAsync("https://graph.microsoft.com/beta/me");
-            if (dataRequest.IsSuccessStatusCode)
+            try
             {
-                var userData = System.Text.Json.JsonDocument.Parse(await dataRequest.Content.ReadAsStreamAsync());
-                var userDisplayName = userData.RootElement.GetProperty("displayName").GetString();
+                var user = await _graphServiceClient.Me.Request().GetAsync();
+                if (Guid.TryParse(user?.Id, out var userId))
+                {
+                    _userState.UserId = userId;
+                }
             }
-            return null;
+            catch(Exception ex)
+            {
+                _consentHandler.HandleException(ex);
+            }
         }
+        public async Task<AppUser> GetUserAsync() => await _userData.GetUserAsync(_userState.UserId);
+        public async Task<AppUser> GetUserAsync(Guid userId) => await _userData.GetUserAsync(userId);
+        public async Task UpdateUserAsync(AppUser user) => await _userData.UpsertUserAsync(user);
     }
 }

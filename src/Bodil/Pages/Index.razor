@@ -3,10 +3,12 @@
 @using BlazorScheduler
 @using Bodil.Services;
 @using Bodil.Models;
-
+@using Bodil.States;
+@using Microsoft.Identity.Web;
 
 @inject IReservationService ReservationService
-@inject IUserDataService UserService
+@inject IUserService UserService
+@inject UserState UserState
 
 <PageTitle>Index</PageTitle>
 <AuthorizeView Context="userContext">
@@ -30,12 +32,14 @@
 @code {
 
     AppUser user = new();
-    List<Reservation> reservations = new(); 
+    List<Reservation> reservations = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = Guid.Parse("fe108034-9d68-4673-9d6b-c89ebc94a7d0");
-        user = await UserService.GetUserAsync(userId);
+        if (!UserState.IsLoggedIn)
+            await UserService.LoginAsync();
+
+        user = await UserService.GetUserAsync(UserState.UserId);
     }
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end) => await ReservationService.AddReservation(user, start, end);
