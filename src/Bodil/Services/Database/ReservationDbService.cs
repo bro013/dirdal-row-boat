@@ -53,7 +53,6 @@ namespace Bodil.Services.Database
                 using var context = await _dbContextFactory.CreateDbContextAsync();
                 return await context.Reservations
                     .Where(res => res.Start >= start && res.End <= end)
-                    .Include(res => res.User)
                     .ToListAsync();
             }
             catch (Exception ex)
