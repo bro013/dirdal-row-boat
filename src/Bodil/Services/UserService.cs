@@ -40,5 +40,7 @@ namespace Bodil.Services
         public async Task<AppUser> GetUserAsync() => await _userData.GetUserAsync(_userState.UserId);
         public async Task<AppUser> GetUserAsync(Guid userId) => await _userData.GetUserAsync(userId);
         public async Task UpdateUserAsync(AppUser user) => await _userData.UpsertUserAsync(user);
+
+        public async Task<IEnumerable<AppUser>> GetAppUsers() => await _userData.GetUsersAsync();
     }
 }

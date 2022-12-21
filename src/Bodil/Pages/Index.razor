@@ -17,7 +17,7 @@
             <Appointments>
                 @foreach (var reservation in reservations)
                 {
-                    <Appointment Start="@reservation.Start" End="@reservation.End" Color="@user.Color">
+                    <Appointment Start="@reservation.Start" End="@reservation.End" Color="@GetUserColor(reservation.UserId)">
                         @reservation.Title
                     </Appointment>
                 }
@@ -32,6 +32,7 @@
 @code {
 
     AppUser user = new();
+    IEnumerable<AppUser> appUsers = Array.Empty<AppUser>();
     List<Reservation> reservations = new();
 
     protected override async Task OnInitializedAsync()
@@ -39,8 +40,14 @@
         if (!UserState.IsLoggedIn)
             await UserService.LoginAsync();
 
-        user = await UserService.GetUserAsync(UserState.UserId);
+        await Task.WhenAll(SetAppUsers(), SetUserAsync());
     }
+
+    string GetUserColor(Guid userId) => appUsers.Where(user => user.Id == userId).FirstOrDefault()?.Color ?? "red";
+
+    async Task SetUserAsync() => user = await UserService.GetUserAsync(UserState.UserId);
+
+    async Task SetAppUsers() => appUsers = await UserService.GetAppUsers();
 
     async Task OnAddingNewAppointment(DateTime start, DateTime end) => await ReservationService.AddReservation(user, start, end);
 
