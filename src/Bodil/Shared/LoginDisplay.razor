@@ -1,15 +1,17 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <MudGrid Justify="Justify.FlexEnd">
-            <MudItem xs="6">
-                <MudText>@context.User.Identity?.Name!</MudText>
-            </MudItem>
-            <MudItem xs="6">
-                <MudButton Href="MicrosoftIdentity/Account/SignOut" Target="_blank" Variant="Variant.Outlined" Color="Color.Success">Logg ut</MudButton>
-            </MudItem>
-        </MudGrid>
+        <div class="d-flex align-content-end flex-wrap flex-grow-1 gap-4">
+            <div class="d-inline pa-2 ">
+                <MudText>@context.User.Identity?.Name</MudText>
+            </div>
+            <div class="d-inline pa-2">
+                <MudButton Href="MicrosoftIdentity/Account/SignOut" Target="_blank" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small">Logg ut</MudButton>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
-        <MudButton Href="MicrosoftIdentity/Account/SignIn" Target="_blank" Variant="Variant.Outlined" Color="Color.Success">Logg inn</MudButton>
+        <div class="d-inline pa-2">
+            <MudButton Href="MicrosoftIdentity/Account/SignIn" Target="_blank" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small">Logg inn</MudButton>
+        </div>
     </NotAuthorized>
 </AuthorizeView>

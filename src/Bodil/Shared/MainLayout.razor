@@ -6,9 +6,15 @@
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudSpacer />
-        <LoginDisplay />
+        <div class="d-flex align-content-end flex-wrap flex-grow-1 gap-4">
+            <div class="d-inline pa-2 ">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            </div>            
+            <div class="d-inline pa-2 ">
+                <LoginDisplay />
+            </div>
+        </div>
+        @*<MudSpacer />*@
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
