@@ -3,7 +3,9 @@ using Bodil.Services;
 using Bodil.Services.TableStorage;
 using Bodil.States;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using MudBlazor.Services;
@@ -35,15 +37,20 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftGraph(config.GetSection("DownstreamApi"))
             .AddInMemoryTokenCaches();
 
-builder.Services.AddControllersWithViews()
-    .AddMicrosoftIdentityUI();
+builder.Services.AddControllersWithViews(options =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 
 builder.Services.AddAuthorization(options =>
 {
     // By default, all incoming requests will be authorized according to the default policy
     options.FallbackPolicy = options.DefaultPolicy;
 });
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddMicrosoftIdentityUI(); ;
 builder.Services.AddMudServices();
 builder.Services.AddServerSideBlazor()
     .AddMicrosoftIdentityConsentHandler()
@@ -68,6 +75,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
