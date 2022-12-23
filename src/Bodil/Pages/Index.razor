@@ -15,7 +15,9 @@
 <PageTitle>Index</PageTitle>
 <AuthorizeView Context="userContext">
     <Authorized>
-        <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData" TodayButtonText="I dag" EnableDragging=false ThemeColor="#00c853">
+        <Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnRequestNewData"
+                   TodayButtonText="I dag" EnableDragging=false
+                   ThemeColor="#00c853" StartDayOfWeek="DayOfWeek.Monday">
             <Appointments>
                 @foreach (var reservation in reservations)
                 {
