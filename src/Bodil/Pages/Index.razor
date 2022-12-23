@@ -45,7 +45,7 @@
         await Task.WhenAll(SetAppUsers(), SetUserAsync());
     }
 
-    string GetUserColor(Guid userId) => appUsers.Where(user => user.Id == userId).FirstOrDefault()?.Color ?? "red";
+    string GetUserColor(Guid userId) => appUsers.Where(user => user.Id == userId).FirstOrDefault()?.Color ?? "white";
 
     async Task SetUserAsync() => user = await UserService.GetUserAsync(UserState.UserId);
 
